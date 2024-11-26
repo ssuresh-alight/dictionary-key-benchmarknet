@@ -26,7 +26,7 @@ public class DictionaryWriteBenchmarks
         _recordMap = [];
         _recordStructMap = [];
         _tupleMap = [];
-        
+
         Array.ForEach(
             recordKeys,
             r =>
@@ -50,7 +50,7 @@ public class DictionaryWriteBenchmarks
             }
         );
     }
-    
+
     [Benchmark(Baseline = true)]
     public Dictionary<string, Message> Writing_Using_String_Key()
     {
@@ -61,7 +61,7 @@ public class DictionaryWriteBenchmarks
     }
 
     [Benchmark]
-    public Dictionary<TestRecord, Message>  Writing_Using_RecordKey()
+    public Dictionary<TestRecord, Message> Writing_Using_RecordKey()
     {
         var key = new TestRecord()
         {
@@ -71,18 +71,6 @@ public class DictionaryWriteBenchmarks
         };
         _recordMap[key] = _newMessage;
         return _recordMap;
-    }
-
-    [Benchmark]
-    public Dictionary<NamedTupleKey, Message>  Writing_Using_TupleKey()
-    {
-        var key = (
-            providerId: _newKeyData.ProviderId,
-            taxid: _newKeyData.TaxId,
-            procedureCategoryCode: _newKeyData.ProcedureCatCode
-        );
-        _tupleMap[key] = _newMessage;
-        return _tupleMap;
     }
 
     [Benchmark]
@@ -96,5 +84,17 @@ public class DictionaryWriteBenchmarks
         };
         _recordStructMap[key] = _newMessage;
         return _recordStructMap;
+    }
+
+    [Benchmark]
+    public Dictionary<NamedTupleKey, Message> Writing_Using_TupleKey()
+    {
+        var key = (
+            providerId: _newKeyData.ProviderId,
+            taxid: _newKeyData.TaxId,
+            procedureCategoryCode: _newKeyData.ProcedureCatCode
+        );
+        _tupleMap[key] = _newMessage;
+        return _tupleMap;
     }
 }
