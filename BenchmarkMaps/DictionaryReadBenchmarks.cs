@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using BenchmarkDotNet.Attributes;
-using NamedTupleKey = (int? providerId, string? taxid, short? procedureCategoryCode);
+using NamedTupleKey = (int? providerId, string? taxId, short? procedureCatCode);
 
 namespace BenchmarkMaps;
 
@@ -28,26 +28,26 @@ public class DictionaryReadBenchmarks
             r =>
             {
                 var message = _fixture.Create<Message>();
-                _stringMap[$"f{r.ProviderId}_t{r.TaxId}_p{r.PrimaryProcedureCategoryCode}"] =
+                _stringMap[$"f{r.ProviderId}_t{r.TaxId}_p{r.ProcedureCatCode}"] =
                     message;
                 _recordMap[r] = message;
                 _tupleMap[(
                     providerId: r.ProviderId,
-                    taxid: r.TaxId,
-                    procedureCategoryCode: r.PrimaryProcedureCategoryCode
+                    taxId: r.TaxId,
+                    procedureCatCode: r.ProcedureCatCode
                 )] = message;
             }
         );
 
         var existingMessage = _fixture.Create<Message>();
         _stringMap[
-                $"f{_existingKeyData.ProviderId}_t{_existingKeyData.TaxId}_p{_existingKeyData.PrimaryProcedureCategoryCode}"] =
+                $"f{_existingKeyData.ProviderId}_t{_existingKeyData.TaxId}_p{_existingKeyData.ProcedureCatCode}"] =
             existingMessage;
         _recordMap[_existingKeyData] = existingMessage;
         _tupleMap[(
             providerId: _existingKeyData.ProviderId,
-            taxid: _existingKeyData.TaxId,
-            procedureCategoryCode: _existingKeyData.PrimaryProcedureCategoryCode
+            taxId: _existingKeyData.TaxId,
+            procedureCatCode: _existingKeyData.ProcedureCatCode
         )] = existingMessage;
     }
 
@@ -55,7 +55,7 @@ public class DictionaryReadBenchmarks
     public Message? Retrieving_Using_String_Key()
     {
         var key =
-            $"f{_existingKeyData.ProviderId}_t{_existingKeyData.TaxId}_p{_existingKeyData.PrimaryProcedureCategoryCode}";
+            $"f{_existingKeyData.ProviderId}_t{_existingKeyData.TaxId}_p{_existingKeyData.ProcedureCatCode}";
         if (_stringMap.TryGetValue(key, out var value))
         {
             return value;
@@ -71,7 +71,7 @@ public class DictionaryReadBenchmarks
         {
             ProviderId = _existingKeyData.ProviderId,
             TaxId = _existingKeyData.TaxId,
-            PrimaryProcedureCategoryCode = _existingKeyData.PrimaryProcedureCategoryCode,
+            ProcedureCatCode = _existingKeyData.ProcedureCatCode,
         };
         if (_recordMap.TryGetValue(key, out var value))
         {
@@ -87,7 +87,7 @@ public class DictionaryReadBenchmarks
         var key = (
             providerId: _existingKeyData.ProviderId,
             taxid: _existingKeyData.TaxId,
-            procedureCategoryCode: _existingKeyData.PrimaryProcedureCategoryCode
+            procedureCategoryCode: _existingKeyData.ProcedureCatCode
         );
         if (_tupleMap.TryGetValue(key, out var value))
         {

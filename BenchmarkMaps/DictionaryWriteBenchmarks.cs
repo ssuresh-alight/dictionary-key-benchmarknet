@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using BenchmarkDotNet.Attributes;
-using NamedTupleKey = (int? providerId, string? taxid, short? procedureCategoryCode);
+using NamedTupleKey = (int? providerId, string? taxId, short? procedureCatCode);
 
 namespace BenchmarkMaps;
 
@@ -29,13 +29,13 @@ public class DictionaryWriteBenchmarks
             r =>
             {
                 var message = _fixture.Create<Message>();
-                _stringMap[$"f{r.ProviderId}_t{r.TaxId}_p{r.PrimaryProcedureCategoryCode}"] =
+                _stringMap[$"f{r.ProviderId}_t{r.TaxId}_p{r.ProcedureCatCode}"] =
                     message;
                 _recordMap[r] = message;
                 _tupleMap[(
                     providerId: r.ProviderId,
-                    taxid: r.TaxId,
-                    procedureCategoryCode: r.PrimaryProcedureCategoryCode
+                    taxId: r.TaxId,
+                    procedureCatCode: r.ProcedureCatCode
                 )] = message;
             }
         );
@@ -45,7 +45,7 @@ public class DictionaryWriteBenchmarks
     public Dictionary<string, Message> Writing_Using_String_Key()
     {
         var key =
-            $"f{_newKeyData.ProviderId}_t{_newKeyData.TaxId}_p{_newKeyData.PrimaryProcedureCategoryCode}";
+            $"f{_newKeyData.ProviderId}_t{_newKeyData.TaxId}_p{_newKeyData.ProcedureCatCode}";
         _stringMap[key] = _newMessage;
         return _stringMap;
     }
@@ -57,7 +57,7 @@ public class DictionaryWriteBenchmarks
         {
             ProviderId = _newKeyData.ProviderId,
             TaxId = _newKeyData.TaxId,
-            PrimaryProcedureCategoryCode = _newKeyData.PrimaryProcedureCategoryCode,
+            ProcedureCatCode = _newKeyData.ProcedureCatCode,
         };
         _recordMap[key] = _newMessage;
         return _recordMap;
@@ -69,7 +69,7 @@ public class DictionaryWriteBenchmarks
         var key = (
             providerId: _newKeyData.ProviderId,
             taxid: _newKeyData.TaxId,
-            procedureCategoryCode: _newKeyData.PrimaryProcedureCategoryCode
+            procedureCategoryCode: _newKeyData.ProcedureCatCode
         );
         _tupleMap[key] = _newMessage;
         return _tupleMap;

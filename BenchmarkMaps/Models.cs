@@ -11,12 +11,12 @@ public class TestClass
 {
     public int? ProviderId { get; set; }
     public string? TaxId { get; set; }
-    public short? PrimaryProcedureCategoryCode { get; set; }
+    public short? ProcedureCatCode { get; set; }
 }
 
 public record class TestRecord
 {
     public int? ProviderId { get; set; }
     public string? TaxId { get; set; }
-    public short? PrimaryProcedureCategoryCode { get; set; }
+    public short? ProcedureCatCode { get; set; }
 }
