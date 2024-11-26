@@ -4,12 +4,14 @@ using NamedTupleKey = (int? providerId, string? taxId, short? procedureCatCode);
 
 namespace BenchmarkMaps;
 
+[MemoryDiagnoser]
 public class DictionaryReadBenchmarks
 {
     private readonly Fixture _fixture = new();
 
     private Dictionary<string, Message> _stringMap;
     private Dictionary<TestRecord, Message> _recordMap;
+    private Dictionary<TestRecordStruct, Message> _recordStructMap;
     private Dictionary<NamedTupleKey, Message> _tupleMap;
     private TestRecord _existingKeyData;
 
@@ -21,6 +23,7 @@ public class DictionaryReadBenchmarks
 
         _stringMap = [];
         _recordMap = [];
+        _recordStructMap = [];
         _tupleMap = [];
 
         Array.ForEach(
@@ -31,6 +34,13 @@ public class DictionaryReadBenchmarks
                 _stringMap[$"f{r.ProviderId}_t{r.TaxId}_p{r.ProcedureCatCode}"] =
                     message;
                 _recordMap[r] = message;
+                _recordStructMap[new()
+                    {
+                        ProviderId = r.ProviderId,
+                        TaxId = r.TaxId,
+                        ProcedureCatCode = r.ProcedureCatCode
+                    }
+                ] = message;
                 _tupleMap[(
                     providerId: r.ProviderId,
                     taxId: r.TaxId,
@@ -44,6 +54,13 @@ public class DictionaryReadBenchmarks
                 $"f{_existingKeyData.ProviderId}_t{_existingKeyData.TaxId}_p{_existingKeyData.ProcedureCatCode}"] =
             existingMessage;
         _recordMap[_existingKeyData] = existingMessage;
+        _recordStructMap[new()
+            {
+                ProviderId = _existingKeyData.ProviderId,
+                TaxId = _existingKeyData.TaxId,
+                ProcedureCatCode = _existingKeyData.ProcedureCatCode
+            }
+        ] = existingMessage;
         _tupleMap[(
             providerId: _existingKeyData.ProviderId,
             taxId: _existingKeyData.TaxId,
@@ -74,6 +91,23 @@ public class DictionaryReadBenchmarks
             ProcedureCatCode = _existingKeyData.ProcedureCatCode,
         };
         if (_recordMap.TryGetValue(key, out var value))
+        {
+            return value;
+        }
+
+        return null;
+    }
+
+    [Benchmark]
+    public Message? Retrieving_Using_RecordStructKey()
+    {
+        TestRecordStruct key = new()
+        {
+            ProviderId = _existingKeyData.ProviderId,
+            TaxId = _existingKeyData.TaxId,
+            ProcedureCatCode = _existingKeyData.ProcedureCatCode
+        };
+        if (_recordStructMap.TryGetValue(key, out var value))
         {
             return value;
         }

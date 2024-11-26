@@ -4,12 +4,14 @@ using NamedTupleKey = (int? providerId, string? taxId, short? procedureCatCode);
 
 namespace BenchmarkMaps;
 
+[MemoryDiagnoser]
 public class DictionaryWriteBenchmarks
 {
     private readonly Fixture _fixture = new();
     private Dictionary<string, Message> _stringMap;
     private Dictionary<TestRecord, Message> _recordMap;
     private Dictionary<NamedTupleKey, Message> _tupleMap;
+    private Dictionary<TestRecordStruct, Message> _recordStructMap;
     private TestRecord _newKeyData;
     private Message _newMessage;
 
@@ -22,6 +24,7 @@ public class DictionaryWriteBenchmarks
 
         _stringMap = [];
         _recordMap = [];
+        _recordStructMap = [];
         _tupleMap = [];
         
         Array.ForEach(
@@ -37,6 +40,13 @@ public class DictionaryWriteBenchmarks
                     taxId: r.TaxId,
                     procedureCatCode: r.ProcedureCatCode
                 )] = message;
+                _recordStructMap[new()
+                    {
+                        ProviderId = r.ProviderId,
+                        TaxId = r.TaxId,
+                        ProcedureCatCode = r.ProcedureCatCode
+                    }
+                ] = message;
             }
         );
     }
@@ -73,5 +83,18 @@ public class DictionaryWriteBenchmarks
         );
         _tupleMap[key] = _newMessage;
         return _tupleMap;
+    }
+
+    [Benchmark]
+    public Dictionary<TestRecordStruct, Message> Writing_Using_RecordStructKey()
+    {
+        TestRecordStruct key = new()
+        {
+            ProviderId = _newKeyData.ProviderId,
+            TaxId = _newKeyData.TaxId,
+            ProcedureCatCode = _newKeyData.ProcedureCatCode
+        };
+        _recordStructMap[key] = _newMessage;
+        return _recordStructMap;
     }
 }

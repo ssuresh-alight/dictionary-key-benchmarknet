@@ -20,3 +20,10 @@ public record class TestRecord
     public string? TaxId { get; set; }
     public short? ProcedureCatCode { get; set; }
 }
+
+public record struct TestRecordStruct
+{
+    public int? ProviderId { get; set; }
+    public string? TaxId { get; set; }
+    public short? ProcedureCatCode { get; set; }
+}
